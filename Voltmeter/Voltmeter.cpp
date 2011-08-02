@@ -1,22 +1,22 @@
-// Voltmeter.cpp: определяет экспортированные функции для приложения DLL.
-//
-
 #include "stdafx.h"
+#include "PCL_Static.h"
 #include "Voltmeter.h"
 
+Voltmeter *pVRef = new Voltmeter(Voltmeter::REFERENCE);
+Voltmeter *pVVer = new Voltmeter(Voltmeter::VERIFIED);
 
-// Пример экспортированной переменной
-VOLTMETER_API int nVoltmeter=0;
+Voltmeter::Voltmeter(Purpose Which) {
 
-// Пример экспортированной функции.
-VOLTMETER_API int fnVoltmeter(void)
-{
-	return 42;
 }
 
-// Конструктор для экспортированного класса.
-// см. определение класса в Voltmeter.h
-CVoltmeter::CVoltmeter()
-{
-	return;
+Voltmeter::~Voltmeter() {
+}
+
+VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which) {
+	if (Which == Voltmeter::REFERENCE) return pVRef;
+	if (Which == Voltmeter::VERIFIED) return pVVer;
+	LException abort(ZShow);
+	abort.Signal(LFormat("Wrong voltmeter purpose code %d\n", Which));
+	LTerminate("Metrology abort during votmeter initialization");
+	return 0;
 }

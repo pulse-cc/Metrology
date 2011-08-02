@@ -11,12 +11,11 @@
 #endif
 
 // Этот класс экспортирован из Voltmeter.dll
-class VOLTMETER_API CVoltmeter {
+class Voltmeter {
 public:
-	CVoltmeter(void);
-	// TODO: Добавьте здесь свои методы.
+	enum Purpose {EMPTY, REFERENCE, VERIFIED}; 
+	Voltmeter(Purpose Which);
+	virtual ~Voltmeter();
 };
 
-extern VOLTMETER_API int nVoltmeter;
-
-VOLTMETER_API int fnVoltmeter(void);
+VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which);
