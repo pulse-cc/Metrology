@@ -1,9 +1,7 @@
-// Приведенный ниже блок ifdef - это стандартный метод создания макросов, упрощающий процедуру 
-// экспорта из библиотек DLL. Все файлы данной DLL скомпилированы с использованием символа CALIBRATOR_EXPORTS,
-// в командной строке. Этот символ не должен быть определен в каком-либо проекте
-// использующем данную DLL. Благодаря этому любой другой проект, чьи исходные файлы включают данный файл, видит 
-// функции CALIBRATOR_API как импортированные из DLL, тогда как данная DLL видит символы,
-// определяемые данным макросом, как экспортированные.
+#ifndef __CALIBRATOR_H__
+#define __CALIBRATOR_H__
+#include "PCL_Static.h"
+
 #ifdef CALIBRATOR_EXPORTS
 #define CALIBRATOR_API __declspec(dllexport)
 #else
@@ -11,11 +9,26 @@
 #endif
 
 
-class Calibrator {
+class CALIBRATOR_API Calibrator {
+	double m_U;
+	uint m_F;
+	bool m_state;
+	pvoid m_data;
+
 public:
 	Calibrator(void);
 	virtual ~Calibrator();
+
+	double setVoltage(double Volt);
+	uint setFrequency(uint Hz);
+	bool setOutput(bool State);
+
+	double getVoltage() {return m_U;};
+	uint getFrequency() {return m_F;};
+	bool getOutput() {return m_state;};
 };
 
 
 CALIBRATOR_API Calibrator *getCalibrator();
+
+#endif

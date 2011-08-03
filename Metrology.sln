@@ -4,8 +4,14 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calibrator", "Calibrator\Calibrator.vcxproj", "{F68F15F5-70DC-4BF2-A126-0D917CD5C9A0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voltmeter", "Voltmeter\Voltmeter.vcxproj", "{45E788AB-DA0C-4759-9E3D-A310CDC0CBFF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F68F15F5-70DC-4BF2-A126-0D917CD5C9A0} = {F68F15F5-70DC-4BF2-A126-0D917CD5C9A0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Inspector", "Inspector\Inspector.vcxproj", "{2D7BB367-7BDC-453C-8432-12497559DF7E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{45E788AB-DA0C-4759-9E3D-A310CDC0CBFF} = {45E788AB-DA0C-4759-9E3D-A310CDC0CBFF}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
