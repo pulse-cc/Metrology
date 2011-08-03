@@ -10,13 +10,12 @@
 #define CALIBRATOR_API __declspec(dllimport)
 #endif
 
-// Этот класс экспортирован из Calibrator.dll
-class CALIBRATOR_API CCalibrator {
+
+class Calibrator {
 public:
-	CCalibrator(void);
-	// TODO: Добавьте здесь свои методы.
+	Calibrator(void);
+	virtual ~Calibrator();
 };
 
-extern CALIBRATOR_API int nCalibrator;
 
-CALIBRATOR_API int fnCalibrator(void);
+CALIBRATOR_API Calibrator *getCalibrator();

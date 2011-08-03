@@ -1,22 +1,23 @@
-// Calibrator.cpp: определяет экспортированные функции для приложения DLL.
-//
-
 #include "stdafx.h"
 #include "Calibrator.h"
+#include "PCL_Static.h"
 
 
-// Пример экспортированной переменной
-CALIBRATOR_API int nCalibrator=0;
+Calibrator *pC = new Calibrator();
 
-// Пример экспортированной функции.
-CALIBRATOR_API int fnCalibrator(void)
+
+CALIBRATOR_API Calibrator *getCalibrator(void)
 {
-	return 42;
+	return pC;
 }
 
-// Конструктор для экспортированного класса.
-// см. определение класса в Calibrator.h
-CCalibrator::CCalibrator()
+
+Calibrator::Calibrator()
+{
+	return;
+}
+
+Calibrator::~Calibrator()
 {
 	return;
 }
