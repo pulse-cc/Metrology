@@ -6,7 +6,7 @@ Voltmeter *pVRef = new Voltmeter(Voltmeter::REFERENCE);
 Voltmeter *pVVer = new Voltmeter(Voltmeter::VERIFIED);
 
 Voltmeter::Voltmeter(Purpose Which) {
-
+	printf("Creating voltmeter of purpose %d\n", Which);
 }
 
 Voltmeter::~Voltmeter() {
