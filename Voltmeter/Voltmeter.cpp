@@ -4,9 +4,11 @@
 #include "Voltmeter.h"
 #include "Calibrator.h"
 
+
 static Voltmeter *pVRef = new Voltmeter(Voltmeter::REFERENCE);
 static Voltmeter *pVVer = new Voltmeter(Voltmeter::VERIFIED);
 static Calibrator *pC = getCalibrator();
+
 
 
 typedef struct {
@@ -41,6 +43,5 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 
 double Voltmeter::getVoltage()
 {
-	return _(A) * log(pC->getVoltage()) + _(B) * sin((double)pC->getFrequency()) + _(C);
-	
+	return _(A) * log(pC->getVoltage()) + _(B) * abs(sin((double)pC->getFrequency())) + _(C);
 }
