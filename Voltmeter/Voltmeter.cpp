@@ -8,6 +8,7 @@ static Voltmeter *pVRef = new Voltmeter(Voltmeter::REFERENCE);
 static Voltmeter *pVVer = new Voltmeter(Voltmeter::VERIFIED);
 static Calibrator *pC = getCalibrator();
 
+
 typedef struct {
 	double A, B, C;
 } data_t;
@@ -41,4 +42,5 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 double Voltmeter::getVoltage()
 {
 	return _(A) * log(pC->getVoltage()) + _(B) * sin((double)pC->getFrequency()) + _(C);
+	
 }
