@@ -21,9 +21,10 @@ Voltmeter::Voltmeter(Purpose Which)
 {
 	printf("Creating voltmeter of purpose %d\n", Which);
 	m_data = new(data_t);
-	_(A) = 0.01;
-	_(B) = 0.9876;
-	_(C) = 0.1234;
+	double LRandomFromTo(double From, double To);
+	_(A) = LRandomFromTo(0.001, 0.01);
+	_(B) = LRandomFromTo(0.01, 1);
+	_(C) = LRandomFromTo(0.01, 0.9);
 }
 
 Voltmeter::~Voltmeter()
@@ -43,5 +44,5 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 
 double Voltmeter::getVoltage()
 {
-	return _(A) * log(pC->getVoltage()) + _(B) * abs(sin((double)pC->getFrequency())) + _(C);
+	return _(A) * pC->getVoltage() + _(B) * abs(sin((double)pC->getFrequency())*0.01) + _(C);
 }
