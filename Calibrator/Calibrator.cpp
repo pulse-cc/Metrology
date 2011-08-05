@@ -5,6 +5,7 @@ static Calibrator *pC = new Calibrator();
 
 CALIBRATOR_API Calibrator *getCalibrator(void)
 {
+	LSleep(100);
 	return pC;
 }
 
@@ -19,6 +20,7 @@ Calibrator::~Calibrator()
 
 double Calibrator::setVoltage(double Volt)
 {
+	LSleep(100);
 	m_U = Volt;
 	// send to device
 	return m_U;
@@ -26,6 +28,7 @@ double Calibrator::setVoltage(double Volt)
 
 uint Calibrator::setFrequency(uint Hz)
 {
+	LSleep(100);
 	m_F = Hz;
 	// send to device
 	return m_F;
@@ -33,6 +36,7 @@ uint Calibrator::setFrequency(uint Hz)
 
 bool Calibrator::setOutput(bool State)
 {
+	LSleep(100);
 	m_state = State;
 	// send to device
 	return m_state;
