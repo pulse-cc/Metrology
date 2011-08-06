@@ -5,7 +5,6 @@ static Calibrator *pC = new Calibrator();
 
 CALIBRATOR_API Calibrator *getCalibrator(void)
 {
-	LSleep(100);
 	return pC;
 }
 

@@ -10,125 +10,115 @@
 #include <math.h>
 #include <stdlib.h>
 
-//int _tmain(int argc, _TCHAR* argv[])
-int main(int argc, char *argv[])
+const double EPSILON = 1e-15;
+
+LString getValue(cstr Key, cstr Chunk)
 {
-	LString suka("yana");
-	//printf("Suka %s\n", (cstr)suka);
+	LString head, tail, errout(" ");
+	LSplit(Chunk, "=", head, tail);
+	if (head != Key) return errout;
+	return tail;
+}
+
+struct {
+	cstr key;
+	bool seen, req;
+} arg[] = {
+	{"Umax", false, true},
+	{"U", false, true},
+	{"F", false, true},
+	{"Eref", false, false},
+};
+
+//int _tmain(int argc, _TCHAR* argv[])
+uint main(uint argc, cstr argv[])
+{
+	LString typeOfCalc;
 	Calibrator *pC = getCalibrator();
 	Voltmeter *pV = getVoltmeter(Voltmeter::REFERENCE);
 	double Umax = 0., U = 0., step = 0., E1 = 0., E2 = 0., k = 0.1;
 	const double minThreshold = 0.0000001;
-	uint F = 0, i = 0, ccount = 0;
-	bool typeOfCalc = 0;
+	uint F = 0, i = 0, j = 0, ccount = 0;
 	//char *command[4] = {"Umax","U","F","Eref"};
 	// Umax = 0 volt U = 0 volt F = 0 Hz Eref = 0.0 volt
 	// Umax=0 - обязательны параметр нужен для того, чтобы мы не установили напряжение больше порога
-	// если передается параметр Eref=0.1 - то устанавливаем эдс, возвращаем U
-	// елси не передается параметр Eref=0.0 - то устанавливаем U и возвращаем эдс
+	// если передается параметр Eref - то устанавливаем эдс, возвращаем U
+	// елси не передается параметр Eref - то устанавливаем U и возвращаем эдс
 	// for example U = 10 F = 1000 Umax = 20 Eref = 0.508185
-	i = 1;
-	ccount = 0;
-	while(i<argc){
-		suka = argv[i];
-		if(suka.FindStr("Umax")){
-			i++;
-			suka = argv[i];
-			if(suka.FindStr("=")){
-				i++;
-				suka = argv[i];
-				if(!(Umax = atof(suka))){
-					printf("Umax is null\n");
-					return 1;
-				}
-			}
-			printf("Umax -> %f\n",Umax);
-		}
-		if(suka.FindStr("U")){
-			i++;
-			suka = argv[i];
-			if(suka.FindStr("=")){
-				i++;
-				suka = argv[i];
-				if(!(U = atof(suka))){
-					printf("U is null\n");
-					return 1;
-				}
-			}
-			printf("U -> %f\n",U);
-		}
-		if(suka.FindStr("F")){
-			i++;
-			suka = argv[i];
-			if(suka.FindStr("=")){
-				i++;
-				suka = argv[i];
-				F = atoi(suka);
-			}
-			printf("F -> %d\n",F);
-		}
-		if(suka.FindStr("Eref")){
-			i++;
-			suka = argv[i];
-			if(suka.FindStr("=")){
-				i++;
-				suka = argv[i];
-				if(!(E1 = atof(suka))){
-					typeOfCalc = 0;
-					printf("Eref is null\n");
-				}
-				else{
-					typeOfCalc = 1;
-					printf("Eref is not null\n");
-				}
-				
-			}
-			printf("Eref -> %f\n",E1);
-		}
-		i++;
+	typeOfCalc = argv[1];
+	if (typeOfCalc == "fix") {
+		arg[3].seen = true;
 	}
-	if(Umax == 0){
-		printf("Umax is null\n");
-		return 1;
+	else if (typeOfCalc == "equ") {
+		arg[3].req = true;
 	}
-	if(U == 0){
-		printf("U is null\n");
-		return 1;
+	else {
+		fprintf(stderr, "Wrong command: %s\n", argv[1]);
+		exit(1);
 	}
-	if(U>Umax){
-		printf("danger damage device U>Umax\n");
-		return 1;
+	for (i = 2; i < argc; i++) {
+		bool good = false;
+		for (j = 0; j < countof(arg); j++) {
+			LString res = getValue(arg[j].key, argv[i]);
+			if (res == " ") continue;
+			good = true;
+			if (arg[j].seen) {
+				fprintf(stderr, "Duplicate or prohibited: %s\n", arg[j].key);
+				exit(1);
+			}
+			switch (j) {
+			case 0:  Umax = LParseDbl(res); break;
+			case 1:  U = LParseDbl(res); break;
+			case 2:  F = LParseInt(res); break;
+			case 3:  E1 = LParseDbl(res); break;
+			}
+			printf("%d=%s\n", j, (cstr)res);
+			arg[j].seen = true;
+		}
+		if (!good) {
+			fprintf(stderr, "Unexpected: %s\n", argv[i]);
+			exit(1);
+		}
 	}
-		////////////////////////////////////
-	if(!typeOfCalc){
+	for (j = 0; j < countof(arg); j++) {
+		if (arg[j].req) if (!arg[j].seen) {
+			fprintf(stderr, "Required but not seen: %s\n", arg[j].key);
+			exit(1);
+		}
+	}
+	if (Umax <= 0.) {
+		fprintf(stderr, "Invalid Umax: %lf\n", Umax);
+		exit(1);
+	}
+	if (typeOfCalc == "fix") if (fabs(U) < EPSILON) {
+		fprintf(stderr, "Invalid U: %lf\n", Umax);
+		exit(1);
+	}
+	printf("Umax=%lf U=%lf F=%d Eref=%lf\n", Umax, U, F, E1);
+	if (typeOfCalc == "fix"){
 		pC->setOutput(0);
 		pC->setVoltage(0);
 		runUpExact(U, F, pC);
 		E1 = pV->getVoltage();
 		printf("set voltage -> %2f V | set frequency -> %d Hz | thermo EMF -> %1f\n", U, F, E1);
 	}
-	else{
+	else {
 		step = U*k;
-		U;
-		while(fabs(step)>minThreshold)
-		{
-		
-			if(U>Umax){
-				printf("danger damage device U>Umax\n");
-				return 1;
+		while (fabs(step) > minThreshold) {
+			if (Umax <= U) {
+				fprintf(stderr, "U is greater than Umax\n");
+				exit(1);
 			}
 			runUpExact(U, F, pC);
 			E2 = pV->getVoltage();
 			printf("set voltage -> %2f V | set frequency -> %d Hz | thermo EMF -> %1f\n", U, F, E2);
 
 			U += step; // этот способ нахождения оказался быстрее всех
-			if(E1<E2&&step>0||E1>E2&&step<0){
-				step = step*(-k);
+			if (E1 < E2 && step > 0 || E1 > E2 && step < 0) {
+				step *= (-k);
 			}
-
 		}
 	}
-	
 	return 0;
 }
 
