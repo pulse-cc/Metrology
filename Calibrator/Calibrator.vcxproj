@@ -128,6 +128,9 @@ copy ..\Debug\Calibrator.lib C:\Projects\Lib</Command>
   <ItemGroup>
     <ClCompile Include="..\com-support.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug-COM|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Calibrator-COM.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

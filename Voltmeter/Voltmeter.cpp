@@ -14,17 +14,28 @@ static Calibrator *pC = getCalibrator();
 typedef struct {
 	double A, B, C;
 } data_t;
-
 #define _(X) (((data_t*)m_data)->X)
 	
 Voltmeter::Voltmeter(Purpose Which)
 {
-	printf("Creating VIRTUAL voltmeter of purpose %d\n", Which);
-	m_data = new(data_t);
-	double LRandomFromTo(double From, double To);
-	_(A) = LRandomFromTo(0.001, 0.01);
-	_(B) = LRandomFromTo(0.01, 1);
-	_(C) = LRandomFromTo(0.01, 0.9);
+	if (Which == REFERENCE) {
+		printf("Creating REFERENCE VIRTUAL voltmeter\n");
+		m_data = new(data_t);
+		_(A) = 0.05;
+		_(B) = 0.33;
+		_(C) = 0.7;
+	}
+	else if (Which == VERIFIED) {
+		printf("Creating VERIFIED VIRTUAL voltmeter\n");
+		m_data = new(data_t);
+		_(A) = LRandomFromTo(0.001, 0.01);
+		_(B) = LRandomFromTo(0.01, 1.);
+		_(C) = LRandomFromTo(0.01, 0.9);
+	}
+	else {
+		fprintf(stderr, "Unknown voltmeter purpose %d\n", Which);
+		exit(1);
+	}
 }
 
 Voltmeter::~Voltmeter()
@@ -36,9 +47,8 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 {
 	if (Which == Voltmeter::REFERENCE) return pVRef;
 	if (Which == Voltmeter::VERIFIED) return pVVer;
-	LException abort(ZShow);
-	abort.Signal(LFormat("Wrong voltmeter purpose code %d\n", Which));
-	LTerminate("Metrology abort during votmeter initialization");
+	fprintf(stderr, "Unknown voltmeter purpose %d\n", Which);
+	exit(1);
 	return 0;
 }
 

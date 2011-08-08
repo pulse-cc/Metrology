@@ -1,15 +1,20 @@
+#ifndef COMSUPPORT_H
+#define COMSUPPORT_H
+
 /* 
  *  ƒмитрий ќбувалин
  *
  *  $Id$
  */
 
-#ifndef COMSUPPORT_H
-#define COMSUPPORT_H
+#include <Windows.h>
 
-/*
- * MAC-адрес устройства: удобнее иметь разные дл€ разных операционных окружений
- */
-const BYTE MAC_EXTENDED_ADDR[8] = { 0xAB, 0xCD, 0x00, 0x00, 0x00, 0x00, 0x11, 0x22 };
+int open_com(int port_number, HANDLE *p_result);
+int write_com(HANDLE com_port, int length, BYTE *buffer);
+int write_com_cstr(HANDLE com_port, const char* cstr);
+int read_com(HANDLE com_port, int length, BYTE *buffer);
+int close_com(HANDLE com_port);
 
-#endif /* COMMON_WIN32 */
+void syncro_delay(int milliseconds);
+
+#endif

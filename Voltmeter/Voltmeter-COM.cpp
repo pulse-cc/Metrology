@@ -4,28 +4,29 @@
 #include "Voltmeter.h"
 #include "Calibrator.h"
 
+extern "C" {
+#	include "..\com-support.h"
+}
+
 static Voltmeter *pVRef = new Voltmeter(Voltmeter::REFERENCE);
 static Voltmeter *pVVer = new Voltmeter(Voltmeter::VERIFIED);
 static Calibrator *pC = getCalibrator();
 
 typedef struct {
-	double A, B, C;
+	HANDLE HPORT;
 } data_t;
-
 #define _(X) (((data_t*)m_data)->X)
 	
 Voltmeter::Voltmeter(Purpose Which)
 {
-	printf("Creating COM%d voltmeter\n", Which);
 	m_data = new(data_t);
-	double LRandomFromTo(double From, double To);
-	_(A) = LRandomFromTo(0.001, 0.01);
-	_(B) = LRandomFromTo(0.01, 1);
-	_(C) = LRandomFromTo(0.01, 0.9);
+	open_com(Which + 1, &_(HPORT));
+	printf("Creating COM%d voltmeter\n", Which + 1);
 }
 
 Voltmeter::~Voltmeter()
 {
+	close_com(_(HPORT));
 	delete m_data;
 }
 
@@ -41,5 +42,5 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 
 double Voltmeter::getVoltage()
 {
-	return _(A) * pC->getVoltage() + _(B) * abs(sin((double)pC->getFrequency())*0.01) + _(C);
+	return -0.5;
 }

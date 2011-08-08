@@ -127,7 +127,9 @@ copy ..\Debug\Voltmeter.lib C:\Projects\Lib</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\com-support.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug-COM|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

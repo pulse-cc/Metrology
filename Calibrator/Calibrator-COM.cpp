@@ -1,71 +1,61 @@
 #include "stdafx.h"
 #include "Calibrator.h"
 
+extern "C" {
+#	include "..\com-support.h"
+}
+
 static Calibrator *pC = new Calibrator();
+
+typedef struct {
+	HANDLE HPORT;
+} data_t;
+#define _(X) (((data_t*)m_data)->X)
+
+#define EOS "\x0d\x0a"
 
 CALIBRATOR_API Calibrator *getCalibrator(void)
 {
-	char sendStr[255];
-	BYTE buffer[255];
-	sprintf(sendStr, "C\r\n");
-	memcpy(&buffer,&sendStr,sizeof(sendStr));
-	//послали
-	sprintf(sendStr, "MI\r\n");
-	memcpy(&buffer,&sendStr,sizeof(sendStr));
-	//послали
 	return pC;
 }
 
 Calibrator::Calibrator()
 {
-	printf("Creating calibrator\n");
+	m_data = new(data_t);
+	open_com(1, &_(HPORT));
+	write_com_cstr(_(HPORT), "C" EOS);
+	write_com_cstr(_(HPORT), "MI" EOS);
+	printf("Creating COM1 calibrator\n");
 }
 
 Calibrator::~Calibrator()
 {
+	close_com(_(HPORT));
+	delete m_data;
 }
 
 double Calibrator::setVoltage(double Volt)
 {
-	char sendStr[255];
-	BYTE buffer[255];
-	sprintf(sendStr, "S%f\r\n",Volt);
-	memcpy(&buffer,&sendStr,sizeof(sendStr));
-	//printf("%X%X%X%X\n",buffer[0],buffer[1],buffer[2],buffer[3]);
-	//послали
-	LSleep(100);
 	m_U = Volt;
-	// send to device
+	write_com_cstr(_(HPORT), LFormat("S%lf" EOS, m_U));
 	return m_U;
 }
 
 uint Calibrator::setFrequency(uint Hz)
 {
-	char sendStr[255];
-	BYTE buffer[255];
-	sprintf(sendStr, "FH%d\r\n",Hz);
-	memcpy(&buffer,&sendStr,sizeof(sendStr));
-	//послали
-	LSleep(100);
 	m_F = Hz;
-	// send to device
+	write_com_cstr(_(HPORT), LFormat("FH%d" EOS, m_F));
 	return m_F;
 }
 
 bool Calibrator::setOutput(bool State)
 {
-	char sendStr[255];
-	BYTE buffer[255];
-	if(State){
-		sprintf(sendStr, "O1\r\n");
-	}
-	else{
-		sprintf(sendStr, "O0\r\n");
-	}
-	memcpy(&buffer,&sendStr,sizeof(sendStr));
-	//послали
-	LSleep(100);
 	m_state = State;
-	// send to device
+	if (m_state) {
+		write_com_cstr(_(HPORT), "O1" EOS);
+	}
+	else {
+		write_com_cstr(_(HPORT), "O0" EOS);
+	}
 	return m_state;
 }
