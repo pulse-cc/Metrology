@@ -33,6 +33,7 @@ struct {
 //int _tmain(int argc, _TCHAR* argv[])
 uint main(uint argc, cstr argv[])
 {
+	printf("Random number from 0 to 1 == %lf\n", LRandomFromTo(0., 1.));
 	LString typeOfCalc;
 	Calibrator *pC = getCalibrator();
 	Voltmeter *pV = getVoltmeter(Voltmeter::REFERENCE);
