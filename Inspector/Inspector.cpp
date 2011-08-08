@@ -114,7 +114,7 @@ uint main(uint argc, cstr argv[])
 			printf("set voltage -> %2f V | set frequency -> %d Hz | thermo EMF -> %1f\n", U, F, E2);
 
 			U += step; // этот способ нахождения оказался быстрее всех
-			if (E1 < E2 && step > 0 || E1 > E2 && step < 0) {
+			if (((E1 < E2) && (step > 0)) || ((E1 > E2) && (step < 0))) {
 				step *= (-k);
 			}
 		}
