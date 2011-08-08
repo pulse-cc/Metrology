@@ -44,7 +44,7 @@ uint main(uint argc, cstr argv[])
 	// Umax=0 - обязательны параметр нужен для того, чтобы мы не установили напряжение больше порога
 	// если передается параметр Eref - то устанавливаем эдс, возвращаем U
 	// елси не передается параметр Eref - то устанавливаем U и возвращаем эдс
-	// for example U = 10 F = 1000 Umax = 20 Eref = 0.508185
+	// for example fic(equ) U=10 F=1000 Umax=20 Eref=0.508185
 	typeOfCalc = argv[1];
 	if (typeOfCalc == "fix") {
 		arg[3].seen = true;
