@@ -4,12 +4,9 @@
 #include "Voltmeter.h"
 #include "Calibrator.h"
 
-
 static Voltmeter *pVRef = new Voltmeter(Voltmeter::REFERENCE);
 static Voltmeter *pVVer = new Voltmeter(Voltmeter::VERIFIED);
 static Calibrator *pC = getCalibrator();
-
-
 
 typedef struct {
 	double A, B, C;
@@ -19,7 +16,7 @@ typedef struct {
 	
 Voltmeter::Voltmeter(Purpose Which)
 {
-	printf("Creating voltmeter of purpose %d\n", Which);
+	printf("Creating VIRTUAL voltmeter of purpose %d\n", Which);
 	m_data = new(data_t);
 	double LRandomFromTo(double From, double To);
 	_(A) = LRandomFromTo(0.001, 0.01);
