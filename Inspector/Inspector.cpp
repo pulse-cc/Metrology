@@ -96,7 +96,7 @@ uint main(uint argc, cstr argv[])
 		exit(1);
 	}
 	printf("Umax=%lf U=%lf F=%d Eref=%lf\n", Umax, U, F, E1);
-	if (typeOfCalc == "fix"){
+	if (typeOfCalc == "fix") {
 		pC->setOutput(0);
 		pC->setVoltage(0);
 		runUpExact(U, F, pC);

@@ -56,8 +56,9 @@ int write_com(HANDLE com_port, int length, BYTE *buffer)
 
 int write_com_cstr(HANDLE com_port, const char* cstr)
 {
-	printf("sending to handle %p string <%s>\n", com_port, cstr);
-	return write_com(com_port, strlen(cstr), (BYTE*)cstr);
+	int len = strlen(cstr);
+	printf("COMSUPPORT>>> sending to handle %p string %d:<%s>\n", com_port, len, cstr);
+	return write_com(com_port, len, (BYTE*)cstr);
 }
 
 int read_com(HANDLE com_port, int length, BYTE *buffer)
