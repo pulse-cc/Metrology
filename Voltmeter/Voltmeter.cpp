@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "math.h"
 #include "PCL_Static.h"
+// Do not move or remove: this is required for PCL static objects allocating
+static const LRoot LAppRoot(0);
+
 #include "Voltmeter.h"
 #include "Calibrator.h"
 
