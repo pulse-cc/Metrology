@@ -95,7 +95,7 @@ copy ..\Debug\Calibrator.lib C:\Projects\Lib</Command>
     </Link>
     <PostBuildEvent>
       <Command>copy Calibrator.h C:\Projects\Include
-copy ..\Debug\Calibrator.lib C:\Projects\Lib</Command>
+copy ..\Debug-COM\Calibrator.lib C:\Projects\Lib</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

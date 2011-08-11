@@ -18,6 +18,7 @@ class CALIBRATOR_API Calibrator {
 public:
 	Calibrator(void);
 	virtual ~Calibrator();
+	void setBarrier(double Umax);
 
 	double setVoltage(double Volt);
 	uint setFrequency(uint Hz);

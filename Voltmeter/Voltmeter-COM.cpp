@@ -19,8 +19,26 @@ typedef struct {
 	
 Voltmeter::Voltmeter(Purpose Which)
 {
+	DeviceType dt;
+	cstr dn;
+	if (Which == REFERENCE) {
+		dt = VOLTM_REF;
+		dn = "VOLTM_REF";
+	}
+	else if (Which == VERIFIED) {
+		dt = VOLTM_VER;
+		dn = "VOLTM_VER";
+	}
+	else {
+		fprintf(stderr, "Unexpected volmeter purpose %d", Which);
+		exit(1);
+	}
 	m_data = new(data_t);
-	open_com(Which + 1, &_(HPORT));
+	open_com(dt, &_(HPORT));
+	write_com_cstr(_(HPORT), "SYST:REM" EOS);
+	write_com_cstr(_(HPORT), "DISP:TEXT \"");
+	write_com_cstr(_(HPORT),  dn);
+	write_com_cstr(_(HPORT), "\"" EOS);
 	printf("Creating COM%d voltmeter\n", Which + 1);
 }
 
@@ -34,13 +52,22 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 {
 	if (Which == Voltmeter::REFERENCE) return pVRef;
 	if (Which == Voltmeter::VERIFIED) return pVVer;
-	LException abort(ZShow);
-	abort.Signal(LFormat("Wrong voltmeter purpose code %d\n", Which));
-	LTerminate("Metrology abort during votmeter initialization");
+	fprintf(stderr, "Unexpected volmeter purpose %d", Which);
+	exit(1);
 	return 0;
 }
 
 double Voltmeter::getVoltage()
 {
-	return -0.5;
+	char buf[20];
+	write_com_cstr(_(HPORT), "MEAS?");
+	syncro_delay(500);
+	read_com(_(HPORT), 17, (BYTE*)&buf[0]);
+	buf[17] = 0;
+	write_com_cstr(_(HPORT), "DISP:TEXT \"");
+	write_com_cstr(_(HPORT),  buf);
+	write_com_cstr(_(HPORT), "\"" EOS);
+	double result = LParseDbl(buf);
+	printf("Measured %lf\n", result);
+	return result;
 }

@@ -95,7 +95,7 @@ copy ..\Debug\Voltmeter.lib C:\Projects\Lib</Command>
     </Link>
     <PostBuildEvent>
       <Command>copy Voltmeter.h C:\Projects\Include
-copy ..\Debug\Voltmeter.lib C:\Projects\Lib</Command>
+copy ..\Debug-COM\Voltmeter.lib C:\Projects\Lib</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
