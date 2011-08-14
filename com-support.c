@@ -14,7 +14,7 @@
 int open_com(DeviceType device, HANDLE *p_result)
 {
 	const char *dcb_string = "baud=9600 parity=N data=8 stop=1";
-	int port_number = 4;
+	int port_number = 1;
 	HANDLE com_port = INVALID_HANDLE_VALUE;
 	char port_name[] = {
 		'\\',
@@ -48,7 +48,7 @@ int open_com(DeviceType device, HANDLE *p_result)
 	com_port = CreateFileA(
 		port_name,
 		GENERIC_READ | GENERIC_WRITE,
-		0,
+		7,
 		NULL,
 		OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL,
