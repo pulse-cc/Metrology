@@ -59,11 +59,11 @@ VOLTMETER_API Voltmeter *getVoltmeter(Voltmeter::Purpose Which)
 
 double Voltmeter::getVoltage()
 {
-	char buf[20];
-	write_com_cstr(_(HPORT), "MEAS?");
+	char buf[20] = "abcdefghijklmnopq";
+	write_com_cstr(_(HPORT), "MEAS?" EOS);
 	syncro_delay(500);
-	read_com(_(HPORT), 17, (BYTE*)&buf[0]);
-	buf[17] = 0;
+	read_com(_(HPORT), 7, (BYTE*)&buf[0]);
+	buf[7] = 0;
 	write_com_cstr(_(HPORT), "DISP:TEXT \"");
 	write_com_cstr(_(HPORT),  buf);
 	write_com_cstr(_(HPORT), "\"" EOS);

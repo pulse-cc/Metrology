@@ -7,7 +7,7 @@
 #include "com-support.h"
 #include <stdio.h>
 
-#define COUNTER_WRITE_DELAY 100
+#define DEVICE_WRITE_DELAY 100
 #define countof(x) (sizeof(x) / sizeof(x[0]))
 #define ERROR_CODE (-(int)GetLastError())
 
@@ -68,7 +68,7 @@ int write_com(HANDLE com_port, int length, BYTE *buffer)
 {
 	DWORD res_length;
 	if (!WriteFile(com_port, buffer, length, &res_length, NULL)) return ERROR_CODE;
-	syncro_delay(COUNTER_WRITE_DELAY);
+	syncro_delay(DEVICE_WRITE_DELAY);
 	return res_length;
 }
 
