@@ -37,6 +37,7 @@ uint main(uint argc, cstr argv[])
 	LString typeOfCalc;
 	Calibrator *pC = getCalibrator();
 	Voltmeter *pV = getVoltmeter(Voltmeter::REFERENCE);
+	Voltmeter *pVver = getVoltmeter(Voltmeter::VERIFIED);
 	double Umax = 0., U = 0., step = 0., E1 = 0., E2 = 0., k = 0.1;
 	const double minThreshold = 0.0000001;
 	uint F = 0, i = 0, j = 0, ccount = 0;
@@ -47,16 +48,31 @@ uint main(uint argc, cstr argv[])
 	// елси не передается параметр Eref - то устанавливаем U и возвращаем эдс
 	// for example fic(equ) U=10 F=1000 Umax=20 Eref=0.508185
 	typeOfCalc = argv[1];
-	if (typeOfCalc == "fix") {
+	if (typeOfCalc == "fix") { // установить напряжение
 		arg[3].seen = true;
 	}
-	else if (typeOfCalc == "equ") {
-		arg[3].req = true;
-	}
-	else {
-		fprintf(stderr, "Wrong command: %s\n", argv[1]);
-		exit(1);
-	}
+	else if (typeOfCalc == "equ") { // подобрать напряжение
+			arg[3].req = true;
+		}
+		else if(typeOfCalc == "res") { // сбросить напряжение на 0 закрыть выход
+				arg[0].req = false;
+				arg[1].req = false;
+				arg[2].req = false;
+			}
+			else if(typeOfCalc == "ref") { // вернуть эдс эталона
+					arg[0].req = false;
+					arg[1].req = false;
+					arg[2].req = false;
+				}
+				else if(typeOfCalc == "ver") { // вернуть эдс тестируемого преобразователя
+						arg[0].req = false;
+						arg[1].req = false;
+						arg[2].req = false;
+					}
+					else {
+						fprintf(stderr, "Wrong command: %s\n", argv[1]);
+						exit(1);
+					}
 	for (i = 2; i < argc; i++) {
 		bool good = false;
 		for (j = 0; j < countof(arg); j++) {
@@ -87,7 +103,7 @@ uint main(uint argc, cstr argv[])
 			exit(1);
 		}
 	}
-	if (Umax <= 0.) {
+	if (Umax <= 0. && typeOfCalc != "res" && typeOfCalc != "ver" && typeOfCalc != "ref") {
 		fprintf(stderr, "Invalid Umax: %lf\n", Umax);
 		exit(1);
 	}
@@ -103,8 +119,9 @@ uint main(uint argc, cstr argv[])
 		runUpExact(U, F, pC);
 		E1 = pV->getVoltage();
 		printf("set voltage -> %2f V | set frequency -> %d Hz | thermo EMF -> %1f\n", U, F, E1);
+		fprintf(stderr,"Eref=%f",E1);
 	}
-	else {
+	if (typeOfCalc == "equ") {
 		step = U*k;
 		while (fabs(step) > minThreshold) {
 			if (Umax <= U) {
@@ -120,6 +137,20 @@ uint main(uint argc, cstr argv[])
 				step *= (-k);
 			}
 		}
+	}
+	if (typeOfCalc == "res"){
+		printf("reset\n");
+		pC->setOutput(0);
+		pC->setVoltage(0);
+	}
+	if (typeOfCalc == "ref"){
+		printf("pV->getVoltage=%1f\n", pV->getVoltage());
+		fprintf(stderr, "Eref=%1f", pV->getVoltage());
+		
+	}
+	if (typeOfCalc == "ver"){
+		printf("pVver->getVoltage=%1f\n", pVver->getVoltage());
+		fprintf(stderr, "Ever=%1f", pVver->getVoltage());
 	}
 	return 0;
 }

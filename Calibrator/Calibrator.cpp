@@ -11,6 +11,9 @@ CALIBRATOR_API Calibrator *getCalibrator(void)
 Calibrator::Calibrator()
 {
 	printf("Creating VIRTUAL calibrator\n");
+	setBarrier(0);
+	setVoltage(0);
+	setFrequency(0);
 }
 
 Calibrator::~Calibrator()
@@ -36,4 +39,11 @@ bool Calibrator::setOutput(bool State)
 	m_state = State;
 	LSleep(100);
 	return m_state;
+}
+void Calibrator::setBarrier(double Umax)
+{
+	if (Umax > 1000.) {
+		fprintf(stderr, "Too high voltage %lf\n", Umax);
+		exit(1);
+	}
 }
